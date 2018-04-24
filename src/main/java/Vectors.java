@@ -41,4 +41,13 @@ public class Vectors {
     public static double distance(SimpleMatrix a, SimpleMatrix b) {
         return magnitude(b.minus(a));
     }
+
+    public static SimpleMatrix homogenize(SimpleMatrix u) {
+        return u.concatRows(new SimpleMatrix(new double[][]{{1}}));
+    }
+
+    public static SimpleMatrix dehomogenize(SimpleMatrix u) {
+        int lastRow = u.numRows() - 1;
+        return u.extractMatrix(0, lastRow, 0, 1).divide(u.get(lastRow, 0));
+    }
 }
