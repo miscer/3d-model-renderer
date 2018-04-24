@@ -29,4 +29,9 @@ public class Triangle {
 
         return p1.plus(p2).plus(p3).divide(3);
     }
+
+    @Override
+    public String toString() {
+        return matrix.toString();
+    }
 }

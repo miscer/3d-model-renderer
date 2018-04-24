@@ -7,27 +7,28 @@ import java.util.List;
 import java.util.Scanner;
 
 class Parser {
-  public static List<Triangle> parseTriangles(InputStream shapeInputStream) throws IOException {
-    Scanner shapeScanner = new Scanner(shapeInputStream);
+    public static List<Triangle> parseTriangles(InputStream shapeInputStream) throws IOException {
+        Scanner shapeScanner = new Scanner(shapeInputStream);
 
-    List<Triangle> triangles = new ArrayList<>();
+        List<Triangle> triangles = new ArrayList<>();
 
-    while (shapeScanner.hasNext()) {
-      triangles.add(parseTriangle(shapeScanner));
+        while (shapeScanner.hasNext()) {
+            triangles.add(parseTriangle(shapeScanner));
+        }
+
+        return triangles;
     }
 
-    return triangles;
-  }
+    private static Triangle parseTriangle(Scanner scanner) throws IOException {
+        SimpleMatrix matrix = new SimpleMatrix(3, 3);
 
-  private static Triangle parseTriangle(Scanner scanner) throws IOException {
-    return null;
-  }
+        for (int x = 0; x < 3; x++) {
+            for (int y = 0; y < 3; y++) {
+                double value = scanner.nextDouble();
+                matrix.set(y, x, value);
+            }
+        }
 
-  private static SimpleMatrix parseVector3d(Scanner scanner) throws IOException {
-    double x = scanner.nextDouble();
-    double y = scanner.nextDouble();
-    double z = scanner.nextDouble();
-
-    return new SimpleMatrix(new double[][]{{x}, {y}, {z}});
-  }
+        return new Triangle(matrix);
+    }
 }
