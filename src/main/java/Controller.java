@@ -1,8 +1,6 @@
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
-import org.ejml.simple.SimpleMatrix;
 
 import java.net.URL;
 import java.util.List;
@@ -13,7 +11,7 @@ public class Controller implements Initializable {
     private Renderer renderer;
 
     private static final Camera CAMERA = new Camera(1200, 800, 240000, 160000);
-    private static final SimpleMatrix LIGHT = Vectors.create3d(0, 0, 0);
+    private static final Light LIGHT = new Light(1, Vectors.create3d(0, 0, 0));
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

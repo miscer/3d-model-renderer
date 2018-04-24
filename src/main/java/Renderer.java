@@ -20,13 +20,13 @@ public class Renderer {
         ));
     }
 
-    public void renderTriangles(Camera camera, SimpleMatrix light, List<Triangle> triangles) {
+    public void renderTriangles(Camera camera, Light light, List<Triangle> triangles) {
         for (Triangle triangle : triangles) {
             renderTriangle(camera, light, triangle);
         }
     }
 
-    public void renderTriangle(Camera camera, SimpleMatrix light, Triangle triangle) {
+    public void renderTriangle(Camera camera, Light light, Triangle triangle) {
         SimpleMatrix m = triangle.getMatrix();
         SimpleMatrix a = camera.project(m.extractVector(false, 0));
         SimpleMatrix b = camera.project(m.extractVector(false, 1));
@@ -44,13 +44,9 @@ public class Renderer {
         context.fill();
     }
 
-    private Color getTriangleColor(SimpleMatrix light, Triangle triangle) {
-        double illumination = Vectors.dot(
-                Vectors.unit(triangle.getSurfaceNormal()),
-                Vectors.unit(light.minus(triangle.getCenteroid()))
-        );
-
-        return Color.gray(Math.max(illumination, 0));
+    private Color getTriangleColor(Light light, Triangle triangle) {
+        double illumination = light.getIllumination(triangle.getSurfaceNormal(), triangle.getCenteroid());
+        return Color.gray(illumination);
     }
 
 }
