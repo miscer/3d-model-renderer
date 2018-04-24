@@ -1,28 +1,32 @@
+import org.ejml.simple.SimpleMatrix;
+
 public class Triangle {
-  private Vector a;
-  private Vector b;
-  private Vector c;
-  
-  public Triangle(Vector a, Vector b, Vector c) {
-    this.a = a;
-    this.b = b;
-    this.c = c;
-  }
+    private SimpleMatrix matrix;
 
-  public Vector getA() {
-    return a;
-  }
+    public Triangle(SimpleMatrix matrix) {
+        this.matrix = matrix;
+    }
 
-  public Vector getB() {
-    return b;
-  }
+    public SimpleMatrix getMatrix() {
+        return matrix;
+    }
 
-  public Vector getC() {
-    return c;
-  }
+    public SimpleMatrix getSurfaceNormal() {
+        SimpleMatrix p1 = matrix.extractVector(false, 0);
+        SimpleMatrix p2 = matrix.extractVector(false, 1);
+        SimpleMatrix p3 = matrix.extractVector(false, 2);
 
-  @Override
-  public String toString() {
-    return String.format("Triangle{%s, %s, %s}", a, b, c);
-  }
+        SimpleMatrix u = p2.minus(p1);
+        SimpleMatrix v = p3.minus(p1);
+
+        return Vectors.cross(u, v);
+    }
+
+    public SimpleMatrix getCenteroid() {
+        SimpleMatrix p1 = matrix.extractVector(false, 0);
+        SimpleMatrix p2 = matrix.extractVector(false, 1);
+        SimpleMatrix p3 = matrix.extractVector(false, 2);
+
+        return p1.plus(p2).plus(p3).divide(3);
+    }
 }

@@ -1,3 +1,5 @@
+import org.ejml.simple.SimpleMatrix;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -18,18 +20,14 @@ class Parser {
   }
 
   private static Triangle parseTriangle(Scanner scanner) throws IOException {
-    Vector a = parseVector(scanner);
-    Vector b = parseVector(scanner);
-    Vector c = parseVector(scanner);
-
-    return new Triangle(a, b, c);
+    return null;
   }
 
-  private static Vector parseVector(Scanner scanner) throws IOException {
+  private static SimpleMatrix parseVector3d(Scanner scanner) throws IOException {
     double x = scanner.nextDouble();
     double y = scanner.nextDouble();
     double z = scanner.nextDouble();
 
-    return new Vector(x, y, z);
+    return new SimpleMatrix(new double[][]{{x}, {y}, {z}});
   }
 }
