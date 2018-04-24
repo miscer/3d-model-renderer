@@ -15,14 +15,23 @@ public class Controller implements Initializable {
     private static final SimpleMatrix TRIANGLE_PROJECTION_MATRIX =
             new SimpleMatrix(new double[][]{{0.005, 0, 0}, {0, 0.005, 0}});
 
-    private static final SimpleMatrix LIGHT = Vectors.create3d(0, 0, 0);
+    private static final SimpleMatrix LIGHT = Vectors.create3d(0, 0, -20000);
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         context = canvas.getGraphicsContext2D();
+        context.translate(600, 400);
+        context.rotate(180);
     }
 
     public void render(List<Triangle> triangles) {
+        SimpleMatrix camera = Vectors.create3d(0, 0, -20000);
+
+        triangles.sort((o1, o2) -> -Double.compare(
+                Vectors.distance(o2.getCenteroid(), camera),
+                Vectors.distance(o1.getCenteroid(), camera)
+        ));
+
         for (Triangle triangle : triangles) {
             renderTriangle(triangle);
         }

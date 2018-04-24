@@ -24,7 +24,7 @@ public class App extends Application {
         controller.render(triangles);
 
         stage.setTitle("CS4102");
-        stage.setScene(new Scene(root, 600, 400));
+        stage.setScene(new Scene(root, 1200, 800));
         stage.show();
     }
 

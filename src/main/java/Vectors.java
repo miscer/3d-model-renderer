@@ -10,7 +10,7 @@ public class Vectors {
         assert v.isVector();
 
         return create3d(
-                u.get(1) * v.get(2) - u.get(0) * v.get(1),
+                u.get(1) * v.get(2) - u.get(2) * v.get(1),
                 u.get(2) * v.get(0) - u.get(0) * v.get(2),
                 u.get(0) * v.get(1) - u.get(1) * v.get(0)
         );
@@ -36,5 +36,9 @@ public class Vectors {
         } else {
             return u;
         }
+    }
+
+    public static double distance(SimpleMatrix a, SimpleMatrix b) {
+        return magnitude(b.minus(a));
     }
 }
