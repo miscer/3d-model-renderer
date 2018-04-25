@@ -2,6 +2,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import org.ejml.simple.SimpleMatrix;
 
+import java.util.Comparator;
 import java.util.List;
 
 public class Renderer {
@@ -12,12 +13,7 @@ public class Renderer {
     }
 
     public static void prepareTriangles(List<Triangle> triangles) {
-        SimpleMatrix camera = Vectors.create3d(0, 0, -20000);
-
-        triangles.sort((o1, o2) -> -Double.compare(
-                Vectors.distance(o2.getCenteroid(), camera),
-                Vectors.distance(o1.getCenteroid(), camera)
-        ));
+        triangles.sort(Comparator.comparingDouble(o -> o.getCenteroid().get(2)));
     }
 
     public void renderTriangles(Camera camera, Light light, List<Triangle> triangles) {
