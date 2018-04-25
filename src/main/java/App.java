@@ -6,7 +6,6 @@ import javafx.stage.Stage;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.List;
 
 public class App extends Application {
@@ -15,7 +14,8 @@ public class App extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         InputStream shapeInputStream = new FileInputStream("data/face-shape.txt");
-        List<Triangle> triangles = Parser.parseTriangles(shapeInputStream);
+        InputStream textureInputStream = new FileInputStream("data/face-texture.txt");
+        List<Triangle> triangles = Parser.parseTriangles(shapeInputStream, textureInputStream);
 
         FXMLLoader loader = new FXMLLoader();
         Parent root = loader.load(getClass().getResource("scene.fxml").openStream());

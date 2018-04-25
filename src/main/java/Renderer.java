@@ -27,7 +27,7 @@ public class Renderer {
     }
 
     public void renderTriangle(Camera camera, Light light, Triangle triangle) {
-        SimpleMatrix m = triangle.getMatrix();
+        SimpleMatrix m = triangle.getPosition();
         SimpleMatrix a = camera.project(m.extractVector(false, 0));
         SimpleMatrix b = camera.project(m.extractVector(false, 1));
         SimpleMatrix c = camera.project(m.extractVector(false, 2));
