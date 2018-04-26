@@ -48,6 +48,7 @@ public class Controller implements Initializable {
         Light light = getLight();
 
         if (light != null) {
+            renderer.clear();
             renderer.renderTriangles(camera, light, triangles);
         }
     }

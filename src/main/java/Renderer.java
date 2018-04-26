@@ -1,3 +1,4 @@
+import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.paint.Color;
@@ -7,6 +8,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public class Renderer {
+    private final GraphicsContext context;
     private final PixelWriter writer;
 
     /**
@@ -14,6 +16,7 @@ public class Renderer {
      * @param context Canvas graphics context
      */
     public Renderer(GraphicsContext context) {
+        this.context = context;
         this.writer = context.getPixelWriter();
     }
 
@@ -23,6 +26,14 @@ public class Renderer {
      */
     public static void prepareTriangles(List<Triangle> triangles) {
         triangles.sort(Comparator.comparingDouble(o -> o.getCenteroid().get(2)));
+    }
+
+    /**
+     * Clears the canvas; erases all pixels
+     */
+    public void clear() {
+        Canvas canvas = context.getCanvas();
+        context.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
     }
 
     /**
