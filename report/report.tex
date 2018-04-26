@@ -20,7 +20,7 @@
 
 In this practical I implement a simple program for rendering a 3D model of a face. The model is defined as a collection of triangles, with the vertices of each triangle specified. The model also has a texture, defined as a greyscale value at each vertex of each triangle.
 
-Orthographic projection and flat shading is used to render the face. Lambert's illuminiation model is used for calculating the intensity of each triangle and the light position and intensity is configurable by the user. The texture is mapped using simple interpolation.
+Orthographic projection and flat shading is used to render the face. Lambert's illumination model is used for calculating the intensity of each triangle and the light position and intensity is configurable by the user. The texture is mapped using simple interpolation.
 
 \section{Design and Implementation}
 
@@ -31,6 +31,8 @@ Information about each triangle is stored in the \texttt{Triangle} class, which 
 The first one is a position. The three vertex vectors are stored in one matrix, therefore the size of the matrix is $3 \times 3$. The first column contains the first vertex, the second column the second vertex and so on. The texture information is stored in another matrix, which has one column and three rows. Each colour value is stored on one row.
 
 I used matrices to store the information to reduce the number of fields in the \texttt{Triangle} class and possibly to allow some matrix operations to be done on the values.
+
+The \texttt{Triangle} class has two methods: for calculating the centeroid and the surface normal vector.
 
 \subsection{Parsing}
 
@@ -86,11 +88,27 @@ The final matrix is used by the camera to project 3D coordinates into 2D space. 
 
 \subsection{Illumination}
 
-Illumination is implemented in the \texttt{Light} class. It has two attributes, position (a 3D vector) and intensity (value from 0 to 1). The class has a method for calculating the illumination for a specific point. The position of the point and the surface normal need to be specified.
+Illumination is implemented in the \texttt{Light} class. It has two attributes, position (a 3D vector) and intensity (value from 0 to 1). The class has a method for calculating the illumination intensity for a specific point. The position of the point and the surface normal need to be specified.
 
 Lambert's illumination model is used to calculate the intensity for each point, with the diffusion coefficient set to 1 and the intensity specified by the attribute.
 
 \subsection{Rendering}
+
+The \texttt{Renderer} class handles all logic related to rendering the triangles on a 2D canvas. It uses the \texttt{Light} and \texttt{Camera} classes to calculate the illumination and project 3D coordinates.
+
+Before the triangles can be rendered, they need to be sorted so that the triangles most distant from the camera are render first -- this is essentially the painter's algorithm. Since I am using orthographic projection and the camera is pointed in line with the z-axis, the triangles are simply sorted by the z-coordinate of their centeroids.
+
+Once triangles are sorted, they can be rendered to the canvas. The 3D vertices of each triangle are first projected to the 2D coordinate system of the canvas. The illuminance is calculated from the triangle centeroid and the surface normal vector. The illuminance is used to scale the texture matrix, so that the colours are less promiment if the triangle is not illuminated properly.
+
+To draw a single triangle on the canvas, all pixels contained in the triangle need to be filled with the correct colour based on the texture.
+
+I chose to use a simple algorithm for filling the triangle. It essentially interpolates between the three vertices and colours. This is done by defining two variables, $j$ and $k$ such that $j, k \in [0, 1]$ and $j + k \leq 1$. A third variable, $i$, is based on $j$ and $k$: $i = 1 - j - k$. Therefore, it is always true that $i + j + k \leq 1$.
+
+These three variables are used to multiply the vertex points and the colour values. For example, to get the position and colour of a point in the middle of the triangle, we set $i = j = k = \frac{1}{3}$. The position of the point is then $p = i a + j b + k c$, where $a$, $b$ and $c$ are vertices of the triangle. The colour is calculated similarly, by multiplying each of the three values by the corresponding variable.
+
+The exact values of $j$ and $k$ are calculated by sampling the range $[0, 1]$. The number of samples depends on the size of the projected triangle. The bounding box for the triangle is calculated and either the width or height (the higher value is selected) is used as the sample size. So, for example, if the bouding box is 3 pixels wide and 2 pixels tall, there are 3 samples, so values of $j$ and $k$ are 0, 0.5 and 1. This way all pixels in the triangle are covered.
+
+One problem is that the sampled positions are not integers, but since pixel positions need to be integers, the samples are simply rounded up or down.
 
 \subsection{User Interface}
 
@@ -112,11 +130,19 @@ There are some unit tests that I used to make sure that the calculation of the c
 
 I tested the program manually. At first I defined a simple model that contained only a few triangles, to see if the projection and rendering onto the canvas is working correctly. Once I had this implemented, I used the supplied face model to test the translation and scaling in the camera, and to see if rendering of triangles is working correctly.
 
-I used a simple model again when I was implementing texture mapping, to see if the colour interpolation is working correctly.
+I used a simple model again when I was implementing texture mapping, to see if the colour interpolation is working correctly. This model can be seen in Figure \ref{fig:triangle}.
+
+\begin{figure}
+  \includegraphics[width=\textwidth]{figures/triangle}
+  \caption{Testing model}
+  \label{fig:triangle}
+\end{figure}
 
 Since there is no reference image for the result, I tried to examine the rendered image, look for odd features and compare them with the input files.
 
 \section{Evaluation}
+
+I completed 
 
 \section{Conclusion}
 
