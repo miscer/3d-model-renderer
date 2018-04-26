@@ -3,23 +3,34 @@ import javafx.scene.image.PixelWriter;
 import javafx.scene.paint.Color;
 import org.ejml.simple.SimpleMatrix;
 
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
 public class Renderer {
     private final PixelWriter writer;
-    private final GraphicsContext context;
 
+    /**
+     * Creates a new renderer that will use the specified context for rendering a model
+     * @param context Canvas graphics context
+     */
     public Renderer(GraphicsContext context) {
-        this.context = context;
         this.writer = context.getPixelWriter();
     }
 
+    /**
+     * Prepares the list of triangles to be rendered; orders them by the z-coordinate of their centeroids
+     * @param triangles
+     */
     public static void prepareTriangles(List<Triangle> triangles) {
         triangles.sort(Comparator.comparingDouble(o -> o.getCenteroid().get(2)));
     }
 
+    /**
+     * Renders all triangles onto the canvas
+     * @param camera Camera used for projection
+     * @param light Light used for illumination
+     * @param triangles Rendered model
+     */
     public void renderTriangles(Camera camera, Light light, List<Triangle> triangles) {
         for (Triangle triangle : triangles) {
             renderTriangle(camera, light, triangle);
@@ -28,17 +39,17 @@ public class Renderer {
 
     private void renderTriangle(Camera camera, Light light, Triangle triangle) {
         SimpleMatrix m = triangle.getPosition();
+
+        // project the triangle vertices to 2D coordinates
         SimpleMatrix a = camera.project(m.extractVector(false, 0));
         SimpleMatrix b = camera.project(m.extractVector(false, 1));
         SimpleMatrix c = camera.project(m.extractVector(false, 2));
 
+        // calculate the illumination intensity for the triangle
         double illumination = light.getIllumination(triangle.getSurfaceNormal(), triangle.getCenteroid());
-        fillTriangle(a, b, c, triangle.getTexture().scale(illumination));
-    }
 
-    private Color getTriangleColor(Light light, Triangle triangle) {
-        double illumination = light.getIllumination(triangle.getSurfaceNormal(), triangle.getCenteroid());
-        return Color.gray(illumination);
+        // draw the triangle to the canvas
+        fillTriangle(a, b, c, triangle.getTexture().scale(illumination));
     }
 
     private void fillTriangle(SimpleMatrix a, SimpleMatrix b, SimpleMatrix c, SimpleMatrix texture) {
