@@ -13,8 +13,8 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        InputStream shapeInputStream = new FileInputStream("data/face-shape.txt");
-        InputStream textureInputStream = new FileInputStream("data/face-texture.txt");
+        InputStream shapeInputStream = getClass().getResource("face-shape.txt").openStream();
+        InputStream textureInputStream = getClass().getResource("face-texture.txt").openStream();
         List<Triangle> triangles = Parser.parseTriangles(shapeInputStream, textureInputStream);
 
         FXMLLoader loader = new FXMLLoader();
