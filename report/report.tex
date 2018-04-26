@@ -142,8 +142,18 @@ Since there is no reference image for the result, I tried to examine the rendere
 
 \section{Evaluation}
 
-I completed 
+I completed the basic specification. The application renders the model of a face using flat shading, orthographic projection and Lambert's illumination model. User can configure the position and the intensity of the light source. The supplied texture is applied by interpolating the three colours on the triangle.
+
+However, my implementation has some drawbacks. The rendering process is quite slow and there are definitely possibilities for optimisation. For instance, z-buffering and back-face culling could be used to reduce the number of rendered triangles.
+
+The camera is fixed to point in line with the z-axis. A more realistic panoramic projection could be used instead of orthographic.
+
+There are some visual artefacts between the triangles. This is due to the triangle fill algorithm, as it is not precise and there might be gaps between edges of adjacent triangles. No antialiasing is implemented, so the edges of diagonal lines are not smooth.
 
 \section{Conclusion}
+
+My task in this practical was to create a program that would render a 3D model, defined in two input files containing the positions of vertices and the colours for each vertex. Simple techniques and algorithms are used to render the model, however the result is a fairly realistic image.
+
+This was an interesting exercise in simple computer graphics processes and algorithms. I was able to apply the knowledge gained from this module to a real application and see what it takes to render a 3D model.
 
 \end{document}
