@@ -30,18 +30,30 @@ public class Controller implements Initializable {
         Renderer.prepareTriangles(triangles);
         this.triangles = triangles;
 
-        renderer.renderTriangles(camera, getLight(), triangles);
+        Light light = getLight();
+
+        if (light != null) {
+            renderer.renderTriangles(camera, light, triangles);
+        }
     }
 
     public void handleRenderClick(ActionEvent actionEvent) {
-        renderer.renderTriangles(camera, getLight(), triangles);
+        Light light = getLight();
+
+        if (light != null) {
+            renderer.renderTriangles(camera, light, triangles);
+        }
     }
 
     private Light getLight() {
-        double x = Double.parseDouble(lightPositionX.getText());
-        double y = Double.parseDouble(lightPositionY.getText());
-        double z = Double.parseDouble(lightPositionZ.getText());
-        double intensity = Double.parseDouble(lightIntensity.getText());
-        return new Light(intensity, Vectors.create3d(x, y, z));
+        try {
+            double x = Double.parseDouble(lightPositionX.getText());
+            double y = Double.parseDouble(lightPositionY.getText());
+            double z = Double.parseDouble(lightPositionZ.getText());
+            double intensity = Double.parseDouble(lightIntensity.getText());
+            return new Light(intensity, Vectors.create3d(x, y, z));
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 }
