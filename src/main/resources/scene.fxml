@@ -30,7 +30,7 @@
                         <Insets bottom="5.0" />
                     </VBox.margin>
                 </TextField>
-                <TextField fx:id="lightPositionZ" layoutX="20.0" layoutY="69.0" text="-100000">
+                <TextField fx:id="lightPositionZ" layoutX="20.0" layoutY="69.0" text="1000000">
                     <VBox.margin>
                         <Insets bottom="5.0" />
                     </VBox.margin>

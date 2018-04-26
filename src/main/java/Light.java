@@ -26,7 +26,7 @@ public class Light {
     public double getIllumination(SimpleMatrix normal, SimpleMatrix point) {
         double illumination = intensity * Vectors.dot(
                 Vectors.unit(normal),
-                Vectors.unit(position.minus(point))
+                Vectors.unit(point.minus(position))
         );
 
         return Math.max(illumination, 0);
