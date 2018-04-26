@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
-    private static final int CAMERA_WORLD_WIDTH = 240000;
-    private static final int CAMERA_WORLD_HEIGHT = 160000;
+    private static final int CAMERA_WORLD_WIDTH = 330000;
+    private static final int CAMERA_WORLD_HEIGHT = 220000;
 
     public Canvas canvas;
     public TextField lightPositionX;
