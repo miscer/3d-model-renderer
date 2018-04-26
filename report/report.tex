@@ -32,7 +32,7 @@ The first one is a position. The three vertex vectors are stored in one matrix, 
 
 I used matrices to store the information to reduce the number of fields in the \texttt{Triangle} class and possibly to allow some matrix operations to be done on the values.
 
-The \texttt{Triangle} class has two methods: for calculating the centeroid and the surface normal vector. The centeroid is obtained by simply multiplying all three vertices by $\frac{1}{3}$. The surface normal is calculated as the cross product of two sides of the triangle: $(p_2 - p_1) \times (p_3 - p_1)$.
+The \texttt{Triangle} class has two methods: for calculating the centeroid and the surface normal vector. The centeroid is obtained by simply multiplying all three vertices by $\frac{1}{3}$ and adding them. The surface normal is calculated as the cross product of two sides of the triangle: $(p_2 - p_1) \times (p_3 - p_1)$.
 
 \subsection{Parsing}
 
@@ -44,7 +44,7 @@ The texture data file contained some odd values -- for example, on line 58101 th
 
 Since we do not have 3D screens, the 3D coordinates of the triangles need to be projected onto a 2D canvas that can be displayed to the user. I used a simple orthographic projection, where the z-coordinate can be simply removed if the camera is pointing along the z-axis.
 
-The projection alone is not enough though. The vertex coordinates are too large to fit on the screen, therefore they need to be scaled down. To achieve this, I defined a window which the camera should cover, for example $240000 \times 160000$ units, and the canvas size, for example $1200 \times 800$. To get the scaling factor, I simply calculate the ration of screen size and window size. In this case it is $0.005$ for both directions.
+The projection alone is not enough though. The vertex coordinates are too large to fit on the screen, therefore they need to be scaled down. To achieve this, I defined a window which the camera should cover, for example $240000 \times 160000$ units, and the canvas size, for example $1200 \times 800$ pixels. To get the scaling factor, I simply calculate the ratio of screen size and window size. In this case it is $0.005$ for both directions.
 
 Since the model is arranged roughly around the $[0, 0, 0]$ point, it needs to be translated as well, otherwise only a quarter of the face would be visible, as the canvas renders the origin in one of the corners. The model is translated by a half of the window size, so that it is in the middle of the projection.
 
@@ -98,15 +98,15 @@ The \texttt{Renderer} class handles all logic related to rendering the triangles
 
 Before the triangles can be rendered, they need to be sorted so that the triangles most distant from the camera are render first -- this is essentially the painter's algorithm. Since I am using orthographic projection and the camera is pointed in line with the z-axis, the triangles are simply sorted by the z-coordinate of their centeroids.
 
-Once triangles are sorted, they can be rendered to the canvas. The 3D vertices of each triangle are first projected to the 2D coordinate system of the canvas. The illuminance is calculated from the triangle centeroid and the surface normal vector. The illuminance is used to scale the texture matrix, so that the colours are less promiment if the triangle is not illuminated properly.
+Once triangles are sorted, they can be rendered to the canvas. The 3D vertices of each triangle are first projected to the 2D coordinate system of the canvas. The illuminance is calculated from the triangle centeroid and the surface normal vector. The illuminance value is used to multiply the texture matrix, so that the colours are less prominent if the triangle is not illuminated properly.
 
 To draw a single triangle on the canvas, all pixels contained in the triangle need to be filled with the correct colour based on the texture.
 
-I chose to use a simple algorithm for filling the triangle. It essentially interpolates between the three vertices and colours. This is done by defining two variables, $j$ and $k$ such that $j, k \in [0, 1]$ and $j + k \leq 1$. A third variable, $i$, is based on $j$ and $k$: $i = 1 - j - k$. Therefore, it is always true that $i + j + k \leq 1$.
+I chose to use a simple algorithm for filling the triangle. It essentially interpolates between the three vertices and colours. This is done by defining two variables, $j$ and $k$ such that $j, k \in [0, 1]$ and $j + k \leq 1$. A third variable, $i$, is based on $j$ and $k$: $i = 1 - j - k$. Therefore, it is always true that $i + j + k = 1$.
 
 These three variables are used to multiply the vertex points and the colour values. For example, to get the position and colour of a point in the middle of the triangle, we set $i = j = k = \frac{1}{3}$. The position of the point is then $p = i a + j b + k c$, where $a$, $b$ and $c$ are vertices of the triangle. The colour is calculated similarly, by multiplying each of the three values by the corresponding variable.
 
-The exact values of $j$ and $k$ are calculated by sampling the range $[0, 1]$. The number of samples depends on the size of the projected triangle. The bounding box for the triangle is calculated and either the width or height (the higher value is selected) is used as the sample size. So, for example, if the bouding box is 3 pixels wide and 2 pixels tall, there are 3 samples, so values of $j$ and $k$ are 0, 0.5 and 1. This way all pixels in the triangle are covered.
+The exact values of $j$ and $k$ are calculated by sampling the range $[0, 1]$. The number of samples depends on the size of the projected triangle. The bounding box for the triangle is calculated and either the width or height (the higher value is selected) is used as the sample size. So, for example, if the bounding box is 3 pixels wide and 2 pixels tall, there are 3 samples, so values of $j$ and $k$ are 0, 0.5 and 1. This way all pixels in the triangle are covered.
 
 One problem is that the sampled positions are not integers, but since pixel positions need to be integers, the samples are simply rounded up or down.
 
@@ -142,13 +142,19 @@ Since there is no reference image for the result, I tried to examine the rendere
 
 \section{Evaluation}
 
-I completed the basic specification. The application renders the model of a face using flat shading, orthographic projection and Lambert's illumination model. User can configure the position and the intensity of the light source. The supplied texture is applied by interpolating the three colours on the triangle.
+I completed the basic specification. The application renders the model of a face using flat shading, orthographic projection and Lambert's illumination model. User can configure the position and the intensity of the light source. The supplied texture is applied by interpolating the three colours on the triangle. The final version of the application with configured light position can be seen in Figure \ref{fig:illuminated}.
+
+\begin{figure}
+  \includegraphics[width=\textwidth]{figures/illuminated}
+  \caption{Application with the illuminated model}
+  \label{fig:illuminated}
+\end{figure}
 
 However, my implementation has some drawbacks. The rendering process is quite slow and there are definitely possibilities for optimisation. For instance, z-buffering and back-face culling could be used to reduce the number of rendered triangles.
 
 The camera is fixed to point in line with the z-axis. A more realistic panoramic projection could be used instead of orthographic.
 
-There are some visual artefacts between the triangles. This is due to the triangle fill algorithm, as it is not precise and there might be gaps between edges of adjacent triangles. No antialiasing is implemented, so the edges of diagonal lines are not smooth.
+There are some visual artefacts between the triangles. This is due to the triangle fill algorithm, as it is not precise and there might be gaps between edges of adjacent triangles. No anti-aliasing is implemented, so the edges of diagonal lines are not smooth.
 
 \section{Conclusion}
 
