@@ -32,7 +32,7 @@ The first one is a position. The three vertex vectors are stored in one matrix, 
 
 I used matrices to store the information to reduce the number of fields in the \texttt{Triangle} class and possibly to allow some matrix operations to be done on the values.
 
-The \texttt{Triangle} class has two methods: for calculating the centeroid and the surface normal vector.
+The \texttt{Triangle} class has two methods: for calculating the centeroid and the surface normal vector. The centeroid is obtained by simply multiplying all three vertices by $\frac{1}{3}$. The surface normal is calculated as the cross product of two sides of the triangle: $(p_2 - p_1) \times (p_3 - p_1)$.
 
 \subsection{Parsing}
 
