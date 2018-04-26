@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
+    private static final int CAMERA_WORLD_WIDTH = 240000;
+    private static final int CAMERA_WORLD_HEIGHT = 160000;
+
     public Canvas canvas;
     public TextField lightPositionX;
     public TextField lightPositionY;
@@ -23,9 +26,13 @@ public class Controller implements Initializable {
         GraphicsContext context = canvas.getGraphicsContext2D();
 
         renderer = new Renderer(context);
-        camera = new Camera(canvas.getWidth(), canvas.getHeight(), 240000, 160000);
+        camera = new Camera(canvas.getWidth(), canvas.getHeight(), CAMERA_WORLD_WIDTH, CAMERA_WORLD_HEIGHT);
     }
 
+    /**
+     * Sets the collection of triangles to be rendered on the canvas
+     * @param triangles List of triangles
+     */
     public void render(List<Triangle> triangles) {
         Renderer.prepareTriangles(triangles);
         this.triangles = triangles;

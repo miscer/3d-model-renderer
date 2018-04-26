@@ -7,6 +7,13 @@ import java.util.List;
 import java.util.Scanner;
 
 class Parser {
+    /**
+     * Parses a model from the specified shape and texture input streams
+     * @param shapeInputStream Input stream containing model vertices
+     * @param textureInputStream Input stream containing colours for each vertex
+     * @return List of parsed triangles
+     * @throws IOException
+     */
     public static List<Triangle> parseTriangles(InputStream shapeInputStream, InputStream textureInputStream) throws IOException {
         Scanner shapeScanner = new Scanner(shapeInputStream);
         Scanner textureScanner = new Scanner(textureInputStream);
